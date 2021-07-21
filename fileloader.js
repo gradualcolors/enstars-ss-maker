@@ -1,4 +1,4 @@
-import * as Magick from '/magick/magickApi.js';
+import * as Magick from './magick/magickApi.js';
 
 //zip
 var blobArray = [];
