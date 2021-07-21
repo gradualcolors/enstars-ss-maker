@@ -1,0 +1,116 @@
+.mainbox {
+  border-color: #0c195c;
+  border-radius: 15px;
+  padding: 10px;
+}
+
+.output {
+  border-color: #0c195c;
+  border-radius: 15px;
+  padding: 15px;
+  border-width: 2px;
+  border-style: solid;
+  width: 75%;
+  margin: auto;
+  min-height: 300px;
+}
+
+.output img {
+
+  height: 250px;
+  border: #0c195c;
+  border-style: dashed;
+  border-radius: 15px;
+  padding: 10px;
+}
+
+.item {
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center
+}
+
+body {
+  font-family: sans-serif;
+}
+
+a {
+  color: #369;
+}
+
+.note {
+  width: 500px;
+  margin: 50px auto;
+  font-size: 1em;
+  color: #333;
+  text-align: justify;
+}
+
+#downloadZip {
+  font-size: 1em;
+}
+
+#drop-area {
+  border: 2px dashed #ccc;
+  border-radius: 20px;
+  width: 480px;
+  margin: 50px auto;
+  padding: 20px;
+}
+
+#drop-area.highlight {
+  border-color: purple;
+}
+
+p {
+  margin-top: 0;
+}
+
+.my-form {
+  margin-bottom: 10px;
+}
+
+#gallery {
+  margin-top: 10px;
+}
+
+#gallery img {
+  width: 150px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.button {
+  display: inline-block;
+  padding: 10px;
+  background: #ccc;
+  cursor: pointer;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.button:hover {
+  background: #ddd;
+}
+
+#fileElem {
+  display: none;
+}
+
+.enabled {
+  border: 2px solid green;
+  background: #bffbbf;
+}
+
+.disabled {
+  border: 2px solid red;
+  background: #fb9292;
+}
+
+#state p {
+  font-size: 12px;
+}
