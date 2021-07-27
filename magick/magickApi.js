@@ -3743,6 +3743,9 @@ var stacktrace = createCommonjsModule(function (module, exports) {
 function Call(inputFiles, command) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield call(inputFiles, command);
+        for (let outputFile of result.outputFiles) {
+            outputFile.blob = new Blob([outputFile.buffer]);
+        }
         return result.outputFiles;
     });
 }
@@ -3756,9 +3759,19 @@ function call(inputFiles, command) {
         args: command,
         requestNumber: magickWorkerPromisesKey,
     };
+    // let transfer = [];
+    // for (let file of request.files) {
+    //   if(file.content instanceof ArrayBuffer)
+    //   {
+    //     transfer.push(file.content)
+    //   }
+    //   else{
+    //     transfer.push(file.content.buffer)
+    //   }
+    // }
     const promise = CreatePromiseEvent();
     magickWorkerPromises[magickWorkerPromisesKey] = promise;
-    magickWorker.postMessage(request);
+    magickWorker.postMessage(request); //,transfer)
     magickWorkerPromisesKey++;
     return promise;
 }
@@ -3778,8 +3791,8 @@ function ChangeUrl(url, fileName) {
     splitUrl[splitUrl.length - 1] = fileName;
     return splitUrl.join('/');
 }
-function GetCurrentUrlDifferentFilename(fileName) {
-    return ChangeUrl(currentJavascriptURL, fileName);
+function GetCurrentUrlDifferentFilename(currentUrl, fileName) {
+    return ChangeUrl(currentUrl, fileName);
 }
 let currentJavascriptURL = './magickApi.js';
 // // instead of doing the sane code of being able to just use import.meta.url 
@@ -3794,13 +3807,47 @@ let currentJavascriptURL = './magickApi.js';
 // } catch (error) {
 //   // eat
 // }
-//
-//
-{
-    let stacktrace$$1 = stacktrace.getSync();
-    currentJavascriptURL = stacktrace$$1[0].fileName;
+function GenerateStackAndGetPathAtDepth(depth) {
+    try {
+        let stacktrace$$1 = stacktrace.getSync();
+        let filePath = stacktrace$$1[depth].fileName;
+        // if the stack trace code doesn't return a path separator
+        if (filePath !== undefined && filePath.indexOf('/') === -1 && filePath.indexOf('\\') === -1) {
+            return undefined;
+        }
+        return filePath;
+    }
+    catch (error) {
+        return undefined;
+    }
 }
-const magickWorkerUrl = GetCurrentUrlDifferentFilename('magick.js');
+function GetCurrentFileURLHelper3() {
+    // 3rd call site didn't work, so I made this complicated maze of helpers.. 
+    // Pulling the filename from the 3rd call site of the stacktrace to get the full path
+    // to the module. The first index is inconsistent across browsers and does not return 
+    // the full path in Safari and results in the worker failing to resolve. 
+    // I am preferring to do depth 0 first, as that will ensure people that do minification still works
+    let filePath = GenerateStackAndGetPathAtDepth(0);
+    if (filePath === undefined) {
+        filePath = GenerateStackAndGetPathAtDepth(2);
+    }
+    // if the stack trace code messes up 
+    if (filePath === undefined) {
+        filePath = './magickApi.js';
+    }
+    return filePath;
+}
+function GetCurrentFileURLHelper2() {
+    return GetCurrentFileURLHelper3();
+}
+function GetCurrentFileURLHelper1() {
+    return GetCurrentFileURLHelper2();
+}
+function GetCurrentFileURL() {
+    return GetCurrentFileURLHelper1();
+}
+currentJavascriptURL = GetCurrentFileURL();
+const magickWorkerUrl = GetCurrentUrlDifferentFilename(currentJavascriptURL, 'magick.js');
 function GenerateMagickWorkerText(magickUrl) {
     // generates code for the following
     // var magickJsCurrentPath = 'magickUrl';
@@ -3810,6 +3857,7 @@ function GenerateMagickWorkerText(magickUrl) {
 }
 let magickWorker;
 if (currentJavascriptURL.startsWith('http')) {
+    // if worker is in a different domain fetch it, and run it
     magickWorker = new Worker(window.URL.createObjectURL(new Blob([GenerateMagickWorkerText(magickWorkerUrl)])));
 }
 else {
@@ -5599,5 +5647,5 @@ var IMWeight;
     IMWeight["Black"] = "Black";
 })(IMWeight || (IMWeight = {}));
 
-export { executeOne$$1 as executeOne, isExecuteCommand$$1 as isExecuteCommand, asExecuteConfig$$1 as asExecuteConfig, executeAndReturnOutputFile$$1 as executeAndReturnOutputFile, addExecuteListener$$1 as addExecuteListener, execute$$1 as execute, createImageHome$$1 as createImageHome, newExecutionContext$$1 as newExecutionContext, Call, call, arrayToCli, cliToArray, asCommand, blobToString, isInputFile, isOutputFile, readFileAsText, isImage, buildInputFile, asInputFile, asOutputFile, getFileName, getFileNameExtension, loadImageElement$$1 as loadImageElement, buildImageSrc$$1 as buildImageSrc, getInputFilesFromHtmlInputElement$$1 as getInputFilesFromHtmlInputElement, getPixelColor$$1 as getPixelColor, builtInImageNames$$1 as builtInImageNames, getBuiltInImages$$1 as getBuiltInImages, getBuiltInImage$$1 as getBuiltInImage, compare$$1 as compare, compareNumber$$1 as compareNumber, extractInfo$$1 as extractInfo, getConfigureFolders$$1 as getConfigureFolders, knownSupportedReadWriteImageFormats$$1 as knownSupportedReadWriteImageFormats, IMAlign, IMAlpha, IMAutoThreshold, IMBoolean, IMCache, IMChannel, IMClass, IMClipPath, IMColorspace, IMCommand, IMCompliance, IMComplex, IMCompose, IMCompress, IMDataType, IMDebug, IMDecoration, IMDirection, IMDispose, IMDistort, IMDither, IMEndian, IMEvaluate, IMFillRule, IMFilter, IMFunction, IMGradient, IMGravity, IMIntensity, IMIntent, IMInterlace, IMInterpolate, IMKernel, IMLayers, IMLineCap, IMLineJoin, IMList, IMLogEvent, IMLog, IMMethod, IMMetric, IMMode, IMMorphology, IMModule, IMNoise, IMOrientation, IMPixelChannel, IMPixelIntensity, IMPixelMask, IMPixelTrait, IMPolicyDomain, IMPolicyRights, IMPreview, IMPrimitive, IMQuantumFormat, IMSparseColor, IMStatistic, IMStorage, IMStretch, IMStyle, IMTool, IMType, IMUnits, IMValidate, IMVirtualPixel, IMWeight };
+export { executeOne$$1 as executeOne, isExecuteCommand$$1 as isExecuteCommand, asExecuteConfig$$1 as asExecuteConfig, executeAndReturnOutputFile$$1 as executeAndReturnOutputFile, addExecuteListener$$1 as addExecuteListener, execute$$1 as execute, createImageHome$$1 as createImageHome, newExecutionContext$$1 as newExecutionContext, Call, call, CreatePromiseEvent, arrayToCli, cliToArray, asCommand, blobToString, isInputFile, isOutputFile, readFileAsText, isImage, buildInputFile, asInputFile, asOutputFile, getFileName, getFileNameExtension, loadImageElement$$1 as loadImageElement, buildImageSrc$$1 as buildImageSrc, getInputFilesFromHtmlInputElement$$1 as getInputFilesFromHtmlInputElement, getPixelColor$$1 as getPixelColor, builtInImageNames$$1 as builtInImageNames, getBuiltInImages$$1 as getBuiltInImages, getBuiltInImage$$1 as getBuiltInImage, compare$$1 as compare, compareNumber$$1 as compareNumber, extractInfo$$1 as extractInfo, getConfigureFolders$$1 as getConfigureFolders, knownSupportedReadWriteImageFormats$$1 as knownSupportedReadWriteImageFormats, IMAlign, IMAlpha, IMAutoThreshold, IMBoolean, IMCache, IMChannel, IMClass, IMClipPath, IMColorspace, IMCommand, IMCompliance, IMComplex, IMCompose, IMCompress, IMDataType, IMDebug, IMDecoration, IMDirection, IMDispose, IMDistort, IMDither, IMEndian, IMEvaluate, IMFillRule, IMFilter, IMFunction, IMGradient, IMGravity, IMIntensity, IMIntent, IMInterlace, IMInterpolate, IMKernel, IMLayers, IMLineCap, IMLineJoin, IMList, IMLogEvent, IMLog, IMMethod, IMMetric, IMMode, IMMorphology, IMModule, IMNoise, IMOrientation, IMPixelChannel, IMPixelIntensity, IMPixelMask, IMPixelTrait, IMPolicyDomain, IMPolicyRights, IMPreview, IMPrimitive, IMQuantumFormat, IMSparseColor, IMStatistic, IMStorage, IMStretch, IMStyle, IMTool, IMType, IMUnits, IMValidate, IMVirtualPixel, IMWeight };
 //# sourceMappingURL=wasm-imagemagick.esm-es6.js.map

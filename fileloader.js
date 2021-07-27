@@ -19,7 +19,8 @@ async function uploadFile(zipFile, i) {
 
           var cmd = "convert -quiet -dispose Background"; 
           cmd += imgNames;
-          cmd+= " -define dither:diffusion-amount=50% -dither FloydSteinberg  -trim -layers TrimBounds +remap -channel A ";
+         // cmd+= " -define dither:diffusion-amount=50% -dither FloydSteinberg  -trim -layers TrimBounds +remap -channel A ";
+         cmd += " -trim -layers TrimBounds +remap -channel A -ordered-dither 2x2 ";
           cmd+= outputName;
       
       

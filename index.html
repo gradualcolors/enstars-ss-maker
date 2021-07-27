@@ -17,9 +17,12 @@
             <form class="my-form">
               <p>Upload multiple files (max of 5) with the file dialog or by dragging and dropping image zip files made from the Enstars SS Animator program onto the dashed region. The chibis will take a few minutes to be created.</p>
               <p>Created by <a href="https://twitter.com/gradualcolors">@gradualcolors</a></p>
+              <div class = "cmd" style="background: #f2f2f2; padding: 5px;margin: 5px 0;font-size:12px">
+                <code>COMMAND: convert -quiet -dispose Background [zipFile] -trim -layers TrimBounds +remap -channel A -ordered-dither 2x2 [output.gif]</code>
+            </div>
               <!--<input type="file" id="fileElem" multiple accept=".zip" onchange="handleFiles(this.files)">-->
               <input type="file" id="fileElem" multiple accept=".zip">
-              <label class="button" for="fileElem" disabled = "disabled">Select some files</label>
+              <label class="button" for="fileElem" id="fileElemBtn">Select some files</label>
               <label class="button disabled" id="downloadZip" disabled="disabled">Download Zip</label>
             </form>
             <progress id="progress-bar" max=100 value=0 style="display: none;"></progress>
@@ -44,12 +47,10 @@
             </div>
         </div>-->
 
-
-        <div id= "state" style="margin:5px 0;"></div>
+        <h3 style="text-align: center;">Console Log</h2>
+        <div id= "state"></div>
         <ul id = "list" style="list-style: none; padding: 0;">
-                <div class = "cmd" style="white-space: pre-line; background: #f2f2f2; padding: 5px;margin: 5px 0;font-size:12px">
-                    convert -quiet -dispose Background [zipFile] -define dither:diffusion-amount=50% -dither FloydSteinberg  -trim -layers TrimBounds +remap -channel A [output.gif]
-                </div>
+                
              <!--  <button class = "btn" >执行命令</button>-->
                 <hr/>
                 <h2 style="text-align: center;">Preview</h2>

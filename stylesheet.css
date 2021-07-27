@@ -24,6 +24,15 @@
   padding: 10px;
 }
 
+#state {
+  border: 1px dashed #0c195c;
+  padding: 5px;
+  margin: 0 auto;
+  height: 75px;
+  overflow-y: scroll;
+  width: 500px;
+  font-weight: bold;
+}
 .item {
   width: 200px;
   height: 200px;
@@ -71,6 +80,7 @@ p {
 
 .my-form {
   margin-bottom: 10px;
+  font-size:13px;
 }
 
 #gallery {
