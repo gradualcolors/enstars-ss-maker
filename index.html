@@ -2,12 +2,37 @@
 <html>
 <head>
 <link rel="stylesheet" href="stylesheet.css">
+
+<script src="APNG/apngbuilder.js" type="text/javascript"></script>
 <script src="jszip/jszip.js" type="text/javascript"></script>
 <script src="jszip/jszip.min.js" type="text/javascript"></script>
 <script src="jszip/jszip-utils.js" type="text/javascript"></script>
 <script src="jszip/jszip-utils.min.js" type="text/javascript"></script>
 <script src="filesaver/FileSaver.js" type="text/javascript"></script>
 <script src="filesaver/FileSaver.min.js" type="text/javascript"></script>
+<!--<script src="require.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    requirejs.config({
+      paths : {
+        jszip : './jszip/jszip'
+      }
+    });
+  </script>
+
+<script>
+    
+require(['jszip'], function (jszip) {
+  window.JSZip = jszip;
+
+  require(["./webp/webpxmux"], function (WebPXMux) {
+    window.xMux = WebPXMux("./webp/webpxmux.wasm"); // <- IMPORTANT
+      xMux.waitRuntime();
+      console.log("webpMux is running");
+});
+});
+
+</script>-->
 </head>
 
     <body>
@@ -15,11 +40,30 @@
 
         <div id="drop-area">
             <form class="my-form">
+              <h3>Instructions</h3>
+              <p>First, PLEASE ensure each sprite zipFile is different (To naming conflicts). Next, select an image type:</p>
+                <ul> 
+                <li>GIF: will output only gif files.</li> 
+                <li>PNGS + APNG: will output the trimmed PNG files and an APNG file for each image.</li>
+                </ul>
+                <p>If you want to generate a GIF after the PNG files, you must refresh the SS Maker page.</p>
               <p>Upload multiple files (max of 5) with the file dialog or by dragging and dropping image zip files made from the Enstars SS Animator program onto the dashed region. The chibis will take a few minutes to be created.</p>
               <p>Created by <a href="https://twitter.com/gradualcolors">@gradualcolors</a></p>
-              <div class = "cmd" style="background: #f2f2f2; padding: 5px;margin: 5px 0;font-size:12px">
-                <code>COMMAND: convert -quiet -dispose Background [zipFile] -trim -layers TrimBounds +remap -channel A -ordered-dither 2x2 [output.gif]</code>
+  <!--          <div class = "cmd" style="background: #f2f2f2; padding: 5px;margin: 5px 0;font-size:12px">
+                <code>GIF COMMAND: convert -quiet -dispose Background [zipFile] -trim -layers TrimBounds +remap -channel A -ordered-dither 2x2 [output.gif]</code>
+                <br/>
+                <code>PNG COMMAND: convert -background none [zipFile] -trim -layers TrimBounds -set dispose background -coalesce -alpha background -scene 1 PNG32:[outputName_%d.png]</code>
+
+            </div>-->  
+            <div class = "cmd" style="background: #f2f2f2; padding: 5px;margin: 5px 0;font-size:12px">
+              <label for="Imgtype">Choose Image Type:</label>
+
+              <select name="Imgtype" id="Imgtype">
+                <option value="gif">GIF</option>
+                <option value="apng">PNGS + APNG</option>
+              </select>
             </div>
+
               <!--<input type="file" id="fileElem" multiple accept=".zip" onchange="handleFiles(this.files)">-->
               <input type="file" id="fileElem" multiple accept=".zip">
               <label class="button" for="fileElem" id="fileElemBtn">Select some files</label>
